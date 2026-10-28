@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Calculator - Free Online Tools</title>
+<meta name="description" content="Age, percentage, EMI aur profit loss calculator free mein use karein.">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172033}
+header{background:#174ea6;color:white;padding:24px 12px;text-align:center}
+header h1{margin:0 0 8px}
+header p{margin:0}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:14px}
+nav button,.calc button{border:0;border-radius:8px;padding:12px 15px;background:#174ea6;color:white;font-size:15px;cursor:pointer}
+main{max-width:650px;margin:10px auto;padding:12px}
+.card{background:white;padding:22px;border-radius:14px;box-shadow:0 3px 12px #0001;margin-bottom:18px}
+.card h2{margin-top:0;color:#174ea6}
+label{display:block;margin-top:14px;font-weight:bold}
+input{width:100%;padding:12px;margin-top:6px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px}
+.calc button{margin-top:18px;width:100%}
+.result{font-weight:bold;color:#087443;margin-top:18px;overflow-wrap:anywhere}
+footer{text-align:center;padding:25px;color:#475569}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+<h1>Smart Calculator</h1>
+<p>Free Online Calculators - Aasaan aur Tez</p>
+</header>
+
+<nav>
+<button onclick="show('age')">Age</button>
+<button onclick="show('percent')">Percentage</button>
+<button onclick="show('emi')">EMI</button>
+<button onclick="show('profit')">Profit/Loss</button>
+</nav>
+
+<main>
+<section class="card calc" id="age">
+<h2>🎂 Age Calculator</h2>
+<label>Date of Birth</label>
+<input type="date" id="dob">
+<button onclick="ageCalc()">Calculate Age</button>
+<div class="result" id="ageResult" aria-live="polite"></div>
+</section>
+
+<section class="card calc hidden" id="percent">
+<h2>📊 Percentage Calculator</h2>
+<label>Obtained Marks</label>
+<input type="number" id="marks" min="0" placeholder="Jaise 420">
+<label>Total Marks</label>
+<input type="number" id="total" min="1" placeholder="Jaise 500">
+<button onclick="percentCalc()">Calculate Percentage</button>
+<div class="result" id="percentResult" aria-live="polite"></div>
+</section>
+
+<section class="card calc hidden" id="emi">
+<h2>🏦 EMI Calculator</h2>
+<label>Loan Amount (₹)</label>
+<input type="number" id="loan" min="1" placeholder="Jaise 500000">
+<label>Annual Interest Rate (%)</label>
+<input type="number" id="rate" min="0" step="any" placeholder="Jaise 9">
+<label>Loan Duration (Years)</label>
+<input type="number" id="years" min="1" max="100" placeholder="Jaise 5">
+<button onclick="emiCalc()">Calculate EMI</button>
+<div class="result" id="emiResult" aria-live="polite"></div>
+</section>
+
+<section class="card calc hidden" id="profit">
+<h2>💰 Profit & Loss Calculator</h2>
+<label>Buying Price (₹)</label>
+<input type="number" id="buy" min="0" step="any" placeholder="Jaise 500">
+<label>Selling Price (₹)</label>
+<input type="number" id="sell" min="0" step="any" placeholder="Jaise 650">
+<button onclick="profitCalc()">Calculate</button>
+<div class="result" id="profitResult" aria-live="polite"></div>
+</section>
+
+<section class="card">
+<h2>About Smart Calculator</h2>
+<p>Smart Calculator ek free tool website hai. Is par aap apni age, exam percentage, loan EMI aur profit ya loss calculate kar sakte hain.</p>
+<h2>Disclaimer</h2>
+<p>EMI ka result anumaan hai. Bank fees, tax aur doosri charges alag ho sakti hain.</p>
+</section>
+</main>
+
+<footer>© <span id="year"></span> Smart Calculator</footer>
+
+<script>
+function show(id){
+document.querySelectorAll('.calc').forEach(x=>x.classList.add('hidden'));
+document.getElementById(id).classList.remove('hidden');
+window.scrollTo({top:0,behavior:'smooth'});
+}
+function ageCalc(){
+let v=document.getElementById('dob').value;
+let out=document.getElementById('ageResult');
+if(!v){out.textContent='Pehle date of birth chunein.';return;}
+let d=new Date(v+'T00:00:00');
+let t=new Date();
+if(isNaN(d.getTime())||d>t){out.textContent='Sahi date chunein.';return;}
+let y=t.getFullYear()-d.getFullYear();
+let m=t.getMonth()-d.getMonth();
+let day=t.getDate()-d.getDate();
+if(day<0){m--;day+=new Date(t.getFullYear(),t.getMonth(),0).getDate();}
+if(m<0){y--;m+=12;}
+out.textContent=y+' saal, '+m+' mahine, '+day+' din';
+}
+function percentCalc(){
+let a=Number(document.getElementById('marks').value);
+let b=Number(document.getElementById('total').value);
+let out=document.getElementById('percentResult');
+if(document.getElementById('marks').value===''||document.getElementById('total').value===''||b<=0||a<0||a>b){out.textContent='Sahi marks aur total marks bharein.';return;}
+out.textContent='Percentage: '+(a/b*100).toFixed(2)+'%';
+}
+function emiCalc(){
+let p=Number(document.getElementById('loan').value);
+let r=Number(document.getElementById('rate').value)/1200;
+let n=Number(document.getElementById('years').value)*12;
+let out=document.getElementById('emiResult');
+if(p<=0||!Number.isFinite(p)||document.getElementById('rate').value===''||Number(document.getElementById('rate').value)<0||n<=0||!Number.isFinite(n)){out.textContent='Loan amount, interest rate aur duration sahi bharein.';return;}
+let e=r===0?p/n:p*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+out.textContent='Monthly EMI: ₹'+e.toLocaleString('en-IN',{maximumFractionDigits:2})+' | Total Payment: ₹'+(e*n).toLocaleString('en-IN',{maximumFractionDigits:2});
+}
+function profitCalc(){
+let b=document.getElementById('buy').value;
+let s=document.getElementById('sell').value;
+let out=document.getElementById('profitResult');
+if(b===''||s===''||Number(b)<0||Number(s)<0||Number(b)===0){out.textContent='Buying price zero se zyada aur dono prices sahi bharein.';return;}
+let diff=Number(s)-Number(b);
+out.textContent=diff>0?'Profit: ₹'+diff.toFixed(2)+' ('+(diff/Number(b)*100).toFixed(2)+'%)':diff<0?'Loss: ₹'+(-diff).toFixed(2)+' ('+(-diff/Number(b)*100).toFixed(2)+'%)':'Na profit, na loss.';
+}
+document.getElementById('year').textContent=new Date().getFullYear();
+</script>
+</body>
+</html>
