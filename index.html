@@ -1,139 +1,629 @@
-
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Free online Smart Calculator for age, percentage, EMI, GST, discounts, profit and loss, loans and scientific calculations.">
 <title>Smart Calculator - Free Online Tools</title>
-<meta name="description" content="Age, percentage, EMI aur profit loss calculator free mein use karein.">
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172033}
-header{background:#174ea6;color:white;padding:24px 12px;text-align:center}
-header h1{margin:0 0 8px}
-header p{margin:0}
-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:14px}
-nav button,.calc button{border:0;border-radius:8px;padding:12px 15px;background:#174ea6;color:white;font-size:15px;cursor:pointer}
-main{max-width:650px;margin:10px auto;padding:12px}
-.card{background:white;padding:22px;border-radius:14px;box-shadow:0 3px 12px #0001;margin-bottom:18px}
-.card h2{margin-top:0;color:#174ea6}
-label{display:block;margin-top:14px;font-weight:bold}
-input{width:100%;padding:12px;margin-top:6px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px}
-.calc button{margin-top:18px;width:100%}
-.result{font-weight:bold;color:#087443;margin-top:18px;overflow-wrap:anywhere}
-footer{text-align:center;padding:25px;color:#475569}
-.hidden{display:none}
+:root {
+  --bg: #f2f5ff;
+  --card: #ffffff;
+  --text: #172033;
+  --primary: #4f46e5;
+  --border: #dfe3f0;
+}
+body.dark {
+  --bg: #111827;
+  --card: #1f2937;
+  --text: #f9fafb;
+  --primary: #818cf8;
+  --border: #374151;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+header {
+  background: var(--primary);
+  color: white;
+  text-align: center;
+  padding: 24px 12px;
+}
+header h1 { margin: 0; font-size: 30px; }
+header p { margin: 6px 0 0; }
+.topbar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  flex-wrap: wrap;
+}
+button, .navbtn {
+  border: 0;
+  background: var(--primary);
+  color: white;
+  padding: 11px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+}
+button:hover, .navbtn:hover { opacity: .85; }
+nav {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 10px;
+}
+nav button { font-size: 14px; }
+main {
+  max-width: 1000px;
+  margin: auto;
+  padding: 14px;
+}
+.calculator {
+  display: none;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.05);
+}
+.calculator.active { display: block; }
+h2 { color: var(--primary); margin-top: 0; }
+label {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+}
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 5px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+}
+.actions { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+.result {
+  margin-top: 16px;
+  padding: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow-wrap: anywhere;
+}
+.secondary { background: #64748b; }
+.scikeys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+.scikeys button { padding: 14px 4px; font-size: 17px; }
+.info {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  margin: 18px 0;
+}
+footer {
+  text-align: center;
+  padding: 24px 12px;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+}
+footer a { color: var(--primary); margin: 0 6px; }
+@media (max-width: 500px) {
+  header h1 { font-size: 25px; }
+  main { padding: 9px; }
+  .calculator { padding: 14px; }
+  nav button { flex: 1 1 42%; }
+}
 </style>
 </head>
+
 <body>
+
 <header>
-<h1>Smart Calculator</h1>
-<p>Free Online Calculators - Aasaan aur Tez</p>
+  <h1>🧮 Smart Calculator</h1>
+  <p>Free Online Calculators for Everyday Use</p>
 </header>
 
-<nav>
-<button onclick="show('age')">Age</button>
-<button onclick="show('percent')">Percentage</button>
-<button onclick="show('emi')">EMI</button>
-<button onclick="show('profit')">Profit/Loss</button>
+<div class="topbar">
+  <button onclick="toggleDark()">🌙 Dark / Light Mode</button>
+  <button class="secondary" onclick="showCalc('home')">🏠 Home</button>
+</div>
+
+<nav aria-label="Calculator menu">
+  <button onclick="showCalc('age')">Age</button>
+  <button onclick="showCalc('percentage')">Percentage</button>
+  <button onclick="showCalc('emi')">EMI</button>
+  <button onclick="showCalc('profit')">Profit & Loss</button>
+  <button onclick="showCalc('scientific')">Scientific</button>
+  <button onclick="showCalc('discount')">Discount</button>
+  <button onclick="showCalc('gst')">GST</button>
+  <button onclick="showCalc('loan')">Loan</button>
 </nav>
 
 <main>
-<section class="card calc" id="age">
-<h2>🎂 Age Calculator</h2>
-<label>Date of Birth</label>
-<input type="date" id="dob">
-<button onclick="ageCalc()">Calculate Age</button>
-<div class="result" id="ageResult" aria-live="polite"></div>
+
+<section id="home" class="calculator active">
+  <h2>Welcome to Smart Calculator</h2>
+  <p>Choose a calculator from the menu above. These free tools help you calculate age, percentages, loan EMI, discounts, GST and more.</p>
+  <div class="info">
+    <h3>Quick Guide</h3>
+    <p>• Age Calculator: Calculate your age from your date of birth.</p>
+    <p>• Percentage: Calculate marks and percentages.</p>
+    <p>• EMI / Loan: Estimate monthly loan payments.</p>
+    <p>• Profit & Loss: Calculate profit, loss and their percentages.</p>
+    <p>• Discount: Calculate sale prices and savings.</p>
+    <p>• GST: Add or remove GST from a price.</p>
+    <p>• Scientific: Perform basic mathematical operations.</p>
+  </div>
 </section>
 
-<section class="card calc hidden" id="percent">
-<h2>📊 Percentage Calculator</h2>
-<label>Obtained Marks</label>
-<input type="number" id="marks" min="0" placeholder="Jaise 420">
-<label>Total Marks</label>
-<input type="number" id="total" min="1" placeholder="Jaise 500">
-<button onclick="percentCalc()">Calculate Percentage</button>
-<div class="result" id="percentResult" aria-live="polite"></div>
+<section id="age" class="calculator">
+  <h2>Age Calculator</h2>
+  <label for="dob">Enter your date of birth</label>
+  <input type="date" id="dob">
+  <div class="actions">
+    <button onclick="calcAge()">Calculate Age</button>
+    <button class="secondary" onclick="resetCalc('age')">Reset</button>
+  </div>
+  <div id="ageResult" class="result" aria-live="polite">Your age will appear here.</div>
 </section>
 
-<section class="card calc hidden" id="emi">
-<h2>🏦 EMI Calculator</h2>
-<label>Loan Amount (₹)</label>
-<input type="number" id="loan" min="1" placeholder="Jaise 500000">
-<label>Annual Interest Rate (%)</label>
-<input type="number" id="rate" min="0" step="any" placeholder="Jaise 9">
-<label>Loan Duration (Years)</label>
-<input type="number" id="years" min="1" max="100" placeholder="Jaise 5">
-<button onclick="emiCalc()">Calculate EMI</button>
-<div class="result" id="emiResult" aria-live="polite"></div>
+<section id="percentage" class="calculator">
+  <h2>Percentage Calculator</h2>
+  <label for="marks">Obtained marks / value</label>
+  <input type="number" id="marks" placeholder="e.g. 450">
+  <label for="total">Total marks / value</label>
+  <input type="number" id="total" placeholder="e.g. 500">
+  <div class="actions">
+    <button onclick="calcPercentage()">Calculate Percentage</button>
+    <button class="secondary" onclick="resetCalc('percentage')">Reset</button>
+  </div>
+  <div id="percentageResult" class="result" aria-live="polite"></div>
 </section>
 
-<section class="card calc hidden" id="profit">
-<h2>💰 Profit & Loss Calculator</h2>
-<label>Buying Price (₹)</label>
-<input type="number" id="buy" min="0" step="any" placeholder="Jaise 500">
-<label>Selling Price (₹)</label>
-<input type="number" id="sell" min="0" step="any" placeholder="Jaise 650">
-<button onclick="profitCalc()">Calculate</button>
-<div class="result" id="profitResult" aria-live="polite"></div>
+<section id="emi" class="calculator">
+  <h2>EMI Calculator</h2>
+  <label for="emiPrincipal">Loan amount (₹)</label>
+  <input type="number" id="emiPrincipal" min="0" placeholder="e.g. 500000">
+  <label for="emiRate">Annual interest rate (%)</label>
+  <input type="number" id="emiRate" min="0" step="any" placeholder="e.g. 8.5">
+  <label for="emiYears">Loan duration (years)</label>
+  <input type="number" id="emiYears" min="0.01" step="any" placeholder="e.g. 5">
+  <div class="actions">
+    <button onclick="calcEMI('emi')">Calculate EMI</button>
+    <button class="secondary" onclick="resetCalc('emi')">Reset</button>
+  </div>
+  <div id="emiResult" class="result" aria-live="polite"></div>
 </section>
 
-<section class="card">
-<h2>About Smart Calculator</h2>
-<p>Smart Calculator ek free tool website hai. Is par aap apni age, exam percentage, loan EMI aur profit ya loss calculate kar sakte hain.</p>
-<h2>Disclaimer</h2>
-<p>EMI ka result anumaan hai. Bank fees, tax aur doosri charges alag ho sakti hain.</p>
+<section id="profit" class="calculator">
+  <h2>Profit & Loss Calculator</h2>
+  <label for="cost">Cost price (₹)</label>
+  <input type="number" id="cost" min="0" placeholder="e.g. 500">
+  <label for="selling">Selling price (₹)</label>
+  <input type="number" id="selling" min="0" placeholder="e.g. 650">
+  <div class="actions">
+    <button onclick="calcProfit()">Calculate Profit / Loss</button>
+    <button class="secondary" onclick="resetCalc('profit')">Reset</button>
+  </div>
+  <div id="profitResult" class="result" aria-live="polite"></div>
 </section>
+
+<section id="scientific" class="calculator">
+  <h2>Scientific Calculator</h2>
+  <label for="sciDisplay">Calculation</label>
+  <input type="text" id="sciDisplay" placeholder="e.g. (2+3)*4" inputmode="decimal">
+  <div class="scikeys">
+    <button onclick="sciAdd('7')">7</button>
+    <button onclick="sciAdd('8')">8</button>
+    <button onclick="sciAdd('9')">9</button>
+    <button onclick="sciAdd('/')">÷</button>
+    <button onclick="sciAdd('4')">4</button>
+    <button onclick="sciAdd('5')">5</button>
+    <button onclick="sciAdd('6')">6</button>
+    <button onclick="sciAdd('*')">×</button>
+    <button onclick="sciAdd('1')">1</button>
+    <button onclick="sciAdd('2')">2</button>
+    <button onclick="sciAdd('3')">3</button>
+    <button onclick="sciAdd('-')">−</button>
+    <button onclick="sciAdd('0')">0</button>
+    <button onclick="sciAdd('.')">.</button>
+    <button onclick="sciAdd('(')">(</button>
+    <button onclick="sciAdd(')')">)</button>
+    <button onclick="sciAdd('+')">+</button>
+    <button onclick="sciAdd('**')">Power</button>
+    <button onclick="sciAdd('Math.sqrt(')">√</button>
+    <button onclick="sciBack()">⌫</button>
+  </div>
+  <div class="actions">
+    <button onclick="calcScientific()">Calculate</button>
+    <button class="secondary" onclick="resetCalc('scientific')">Clear</button>
+  </div>
+  <div id="scientificResult" class="result" aria-live="polite"></div>
+  <p>Tip: For square root, enter a number after √ and close the bracket. Example: √(25)</p>
+</section>
+
+<section id="discount" class="calculator">
+  <h2>Discount Calculator</h2>
+  <label for="originalPrice">Original price (₹)</label>
+  <input type="number" id="originalPrice" min="0" placeholder="e.g. 2000">
+  <label for="discountRate">Discount (%)</label>
+  <input type="number" id="discountRate" min="0" max="100" step="any" placeholder="e.g. 20">
+  <div class="actions">
+    <button onclick="calcDiscount()">Calculate Discount</button>
+    <button class="secondary" onclick="resetCalc('discount')">Reset</button>
+  </div>
+  <div id="discountResult" class="result" aria-live="polite"></div>
+</section>
+
+<section id="gst" class="calculator">
+  <h2>GST Calculator</h2>
+  <label for="gstPrice">Price (₹)</label>
+  <input type="number" id="gstPrice" min="0" placeholder="e.g. 1000">
+  <label for="gstRate">GST rate (%)</label>
+  <select id="gstRate">
+    <option value="0">0%</option>
+    <option value="5">5%</option>
+    <option value="12">12%</option>
+    <option value="18" selected>18%</option>
+    <option value="28">28%</option>
+  </select>
+  <label for="gstMode">Calculation type</label>
+  <select id="gstMode">
+    <option value="add">Add GST to price</option>
+    <option value="remove">Remove GST from GST-inclusive price</option>
+  </select>
+  <div class="actions">
+    <button onclick="calcGST()">Calculate GST</button>
+    <button class="secondary" onclick="resetCalc('gst')">Reset</button>
+  </div>
+  <div id="gstResult" class="result" aria-live="polite"></div>
+</section>
+
+<section id="loan" class="calculator">
+  <h2>Loan Calculator</h2>
+  <p>Estimate monthly payments and total interest for a loan.</p>
+  <label for="loanPrincipal">Loan amount (₹)</label>
+  <input type="number" id="loanPrincipal" min="0" placeholder="e.g. 100000">
+  <label for="loanRate">Annual interest rate (%)</label>
+  <input type="number" id="loanRate" min="0" step="any" placeholder="e.g. 10">
+  <label for="loanMonths">Duration (months)</label>
+  <input type="number" id="loanMonths" min="1" step="1" placeholder="e.g. 36">
+  <div class="actions">
+    <button onclick="calcEMI('loan')">Calculate Loan</button>
+    <button class="secondary" onclick="resetCalc('loan')">Reset</button>
+  </div>
+  <div id="loanResult" class="result" aria-live="polite"></div>
+</section>
+
+<section class="info" id="about">
+  <h2>About Us</h2>
+  <p>Smart Calculator provides free online calculation tools for everyday needs, including percentage, age, loan, GST, discount and profit/loss calculations.</p>
+</section>
+
+<section class="info" id="privacy">
+  <h2>Privacy Policy</h2>
+  <p>These calculators perform calculations in your browser. This code does not send the entered calculator values to a server. If analytics, advertising, forms or third-party services are added later, this policy must be updated to explain their data collection and use.</p>
+</section>
+
+<section class="info" id="disclaimer">
+  <h2>Disclaimer</h2>
+  <p>Results are estimates for general informational use. Loan and EMI calculations may not include processing fees, taxes, insurance or lender-specific terms. Verify important financial decisions with the relevant institution.</p>
+  <p>GST rates and tax rules can change. Check the applicable official rules before using these results for tax compliance.</p>
+</section>
+
+<section class="info" id="contact">
+  <h2>Contact Us</h2>
+  <p>For feedback or questions, add your own contact email address here before publishing the website.</p>
+  <p>Contact: your-email@example.com</p>
+</section>
+
 </main>
 
-<footer>© <span id="year"></span> Smart Calculator</footer>
+<footer>
+  <p>© <span id="year"></span> Smart Calculator</p>
+  <a href="#about">About</a>
+  <a href="#privacy">Privacy Policy</a>
+  <a href="#disclaimer">Disclaimer</a>
+  <a href="#contact">Contact</a>
+</footer>
 
 <script>
-function show(id){
-document.querySelectorAll('.calc').forEach(x=>x.classList.add('hidden'));
-document.getElementById(id).classList.remove('hidden');
-window.scrollTo({top:0,behavior:'smooth'});
+const $ = id => document.getElementById(id);
+
+function showCalc(id) {
+  document.querySelectorAll('.calculator').forEach(section => {
+    section.classList.toggle('active', section.id === id);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-function ageCalc(){
-let v=document.getElementById('dob').value;
-let out=document.getElementById('ageResult');
-if(!v){out.textContent='Pehle date of birth chunein.';return;}
-let d=new Date(v+'T00:00:00');
-let t=new Date();
-if(isNaN(d.getTime())||d>t){out.textContent='Sahi date chunein.';return;}
-let y=t.getFullYear()-d.getFullYear();
-let m=t.getMonth()-d.getMonth();
-let day=t.getDate()-d.getDate();
-if(day<0){m--;day+=new Date(t.getFullYear(),t.getMonth(),0).getDate();}
-if(m<0){y--;m+=12;}
-out.textContent=y+' saal, '+m+' mahine, '+day+' din';
+
+function toggleDark() {
+  document.body.classList.toggle('dark');
 }
-function percentCalc(){
-let a=Number(document.getElementById('marks').value);
-let b=Number(document.getElementById('total').value);
-let out=document.getElementById('percentResult');
-if(document.getElementById('marks').value===''||document.getElementById('total').value===''||b<=0||a<0||a>b){out.textContent='Sahi marks aur total marks bharein.';return;}
-out.textContent='Percentage: '+(a/b*100).toFixed(2)+'%';
+
+function num(id) {
+  return Number($(id).value);
 }
-function emiCalc(){
-let p=Number(document.getElementById('loan').value);
-let r=Number(document.getElementById('rate').value)/1200;
-let n=Number(document.getElementById('years').value)*12;
-let out=document.getElementById('emiResult');
-if(p<=0||!Number.isFinite(p)||document.getElementById('rate').value===''||Number(document.getElementById('rate').value)<0||n<=0||!Number.isFinite(n)){out.textContent='Loan amount, interest rate aur duration sahi bharein.';return;}
-let e=r===0?p/n:p*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
-out.textContent='Monthly EMI: ₹'+e.toLocaleString('en-IN',{maximumFractionDigits:2})+' | Total Payment: ₹'+(e*n).toLocaleString('en-IN',{maximumFractionDigits:2});
+
+function validNonNegative(value) {
+  return Number.isFinite(value) && value >= 0;
 }
-function profitCalc(){
-let b=document.getElementById('buy').value;
-let s=document.getElementById('sell').value;
-let out=document.getElementById('profitResult');
-if(b===''||s===''||Number(b)<0||Number(s)<0||Number(b)===0){out.textContent='Buying price zero se zyada aur dono prices sahi bharein.';return;}
-let diff=Number(s)-Number(b);
-out.textContent=diff>0?'Profit: ₹'+diff.toFixed(2)+' ('+(diff/Number(b)*100).toFixed(2)+'%)':diff<0?'Loss: ₹'+(-diff).toFixed(2)+' ('+(-diff/Number(b)*100).toFixed(2)+'%)':'Na profit, na loss.';
+
+function money(value) {
+  return value.toLocaleString('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 2
+  });
 }
-document.getElementById('year').textContent=new Date().getFullYear();
+
+function calcAge() {
+  const value = $('dob').value;
+  const result = $('ageResult');
+
+  if (!value) {
+    result.textContent = 'Please select your date of birth.';
+    return;
+  }
+
+  const birth = new Date(value + 'T00:00:00');
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (Number.isNaN(birth.getTime()) || birth > today) {
+    result.textContent = 'Please enter a valid date that is not in the future.';
+    return;
+  }
+
+  let years = today.getFullYear() - birth.getFullYear();
+  let months = today.getMonth() - birth.getMonth();
+  let days = today.getDate() - birth.getDate();
+
+  if (days < 0) {
+    months--;
+    const previousMonthDays = new Date(
+      today.getFullYear(), today.getMonth(), 0
+    ).getDate();
+    days += previousMonthDays;
+  }
+
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  result.textContent = `Your age is ${years} years, ${months} months and ${days} days.`;
+}
+
+function calcPercentage() {
+  const obtained = num('marks');
+  const total = num('total');
+  const result = $('percentageResult');
+
+  if (!validNonNegative(obtained) ||
+      !Number.isFinite(total) || total <= 0 ||
+      obtained > total) {
+    result.textContent = 'Enter valid values. Obtained marks must not exceed a positive total.';
+    return;
+  }
+
+  result.textContent =
+    `Percentage: ${(obtained / total * 100).toFixed(2)}%`;
+}
+
+function calcEMI(type) {
+  let principal, annualRate, months, result;
+
+  if (type === 'emi') {
+    principal = num('emiPrincipal');
+    annualRate = num('emiRate');
+    const years = num('emiYears');
+    months = Math.round(years * 12);
+    result = $('emiResult');
+
+    if (!Number.isFinite(years) || years <= 0) {
+      result.textContent = 'Enter a valid loan duration in years.';
+      return;
+    }
+  } else {
+    principal = num('loanPrincipal');
+    annualRate = num('loanRate');
+    months = num('loanMonths');
+    result = $('loanResult');
+
+    if (!Number.isInteger(months) || months <= 0) {
+      result.textContent = 'Enter a positive whole number of months.';
+      return;
+    }
+  }
+
+  if (!validNonNegative(principal) || principal <= 0 ||
+      !validNonNegative(annualRate)) {
+    result.textContent = 'Enter a positive loan amount and a valid non-negative interest rate.';
+    return;
+  }
+
+  if (!Number.isFinite(months) || months <= 0 || months > 1200) {
+    result.textContent = 'Duration must be between 1 and 1200 months.';
+    return;
+  }
+
+  const monthlyRate = annualRate / 1200;
+  const emi = monthlyRate === 0
+    ? principal / months
+    : principal * monthlyRate * Math.pow(1 + monthlyRate, months) /
+      (Math.pow(1 + monthlyRate, months) - 1);
+
+  const totalPayment = emi * months;
+  const totalInterest = totalPayment - principal;
+
+  result.innerHTML =
+    `Monthly EMI: <strong>${money(emi)}</strong><br>` +
+    `Total payment: ${money(totalPayment)}<br>` +
+    `Total interest: ${money(totalInterest)}`;
+}
+
+function calcProfit() {
+  const cost = num('cost');
+  const selling = num('selling');
+  const result = $('profitResult');
+
+  if (!validNonNegative(cost) || !validNonNegative(selling) || cost <= 0) {
+    result.textContent = 'Enter a positive cost price and a valid selling price.';
+    return;
+  }
+
+  const difference = selling - cost;
+  const percent = Math.abs(difference) / cost * 100;
+
+  if (difference > 0) {
+    result.innerHTML =
+      `Profit: ${money(difference)}<br>Profit percentage: ${percent.toFixed(2)}%`;
+  } else if (difference < 0) {
+    result.innerHTML =
+      `Loss: ${money(-difference)}<br>Loss percentage: ${percent.toFixed(2)}%`;
+  } else {
+    result.textContent = 'No profit, no loss.';
+  }
+}
+
+function calcDiscount() {
+  const price = num('originalPrice');
+  const rate = num('discountRate');
+  const result = $('discountResult');
+
+  if (!validNonNegative(price) || !Number.isFinite(rate) ||
+      rate < 0 || rate > 100) {
+    result.textContent = 'Enter a valid price and a discount between 0% and 100%.';
+    return;
+  }
+
+  const saving = price * rate / 100;
+  const finalPrice = price - saving;
+
+  result.innerHTML =
+    `You save: <strong>${money(saving)}</strong><br>` +
+    `Final price: <strong>${money(finalPrice)}</strong>`;
+}
+
+function calcGST() {
+  const price = num('gstPrice');
+  const rate = num('gstRate');
+  const mode = $('gstMode').value;
+  const result = $('gstResult');
+
+  if (!validNonNegative(price) || !validNonNegative(rate)) {
+    result.textContent = 'Enter a valid price and GST rate.';
+    return;
+  }
+
+  if (mode === 'add') {
+    const tax = price * rate / 100;
+    result.innerHTML =
+      `Price before GST: ${money(price)}<br>` +
+      `GST amount: ${money(tax)}<br>` +
+      `Total including GST: <strong>${money(price + tax)}</strong>`;
+  } else {
+    const base = price / (1 + rate / 100);
+    const tax = price - base;
+    result.innerHTML =
+      `Price before GST: ${money(base)}<br>` +
+      `GST included: ${money(tax)}<br>` +
+      `Total including GST: ${money(price)}`;
+  }
+}
+
+function sciAdd(value) {
+  $('sciDisplay').value += value;
+  $('sciDisplay').focus();
+}
+
+function sciBack() {
+  const input = $('sciDisplay');
+  input.value = input.value.slice(0, -1);
+  input.focus();
+}
+
+function calcScientific() {
+  const expression = $('sciDisplay').value.trim();
+  const result = $('scientificResult');
+
+  if (!expression) {
+    result.textContent = 'Enter a mathematical expression.';
+    return;
+  }
+
+  // Allow only basic arithmetic and the square-root function.
+  const allowed = /^[0-9+\-*/().\s]*$/;
+  const sqrtAllowed = expression.replace(/Math\.sqrt\(/g, '');
+
+  if (!allowed.test(sqrtAllowed) ||
+      /[^0-9+\-*/().\s]/.test(sqrtAllowed) ||
+      expression.includes('Math.sqrt') &&
+      !/^([0-9+\-*/().\s]|Math\.sqrt\()+$/.test(expression)) {
+    result.textContent = 'Invalid expression. Use numbers and arithmetic operators only.';
+    return;
+  }
+
+  try {
+    // This expression is checked against an allowlist before evaluation.
+    const value = Function('"use strict"; return (' + expression + ')')();
+
+    if (typeof value !== 'number' || !Number.isFinite(value)) {
+      result.textContent = 'The result is not a finite number.';
+      return;
+    }
+
+    result.textContent = 'Result: ' + Number(value.toPrecision(12));
+  } catch (error) {
+    result.textContent = 'Invalid expression. Check your brackets and operators.';
+  }
+}
+
+function resetCalc(id) {
+  const section = $(id);
+  if (!section) return;
+
+  section.querySelectorAll('input').forEach(input => {
+    input.value = '';
+  });
+
+  section.querySelectorAll('select').forEach(select => {
+    select.selectedIndex = 0;
+  });
+
+  section.querySelectorAll('.result').forEach(result => {
+    result.textContent = '';
+  });
+}
+
+$('year').textContent = new Date().getFullYear();
+$('dob').max = new Date().toISOString().split('T')[0];
+
+$('sciDisplay').addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    calcScientific();
+  }
+});
 </script>
+
 </body>
 </html>
